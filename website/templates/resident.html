@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block title %}Requests{% endblock %} {%block content%}
+
+<h1 align="center">Make Request/Register Complaints</h1>
+
+<form method="POST">
+    <textarea name="userRequest" id="userRequest" class="form-control"></textarea>
+    <br/>
+    <div align="center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        
+    </div>
+</form>
+
+<h1 align="center" class="mt-5">Current Requests</h1>
+<ul class="list-group list-group-flush" id="requests">
+    {% for request in user.requests %}
+        {% if request.status=="active" %}
+            <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
+                {{request.userRequest}}
+                <button type="button" class="close" onClick="deleteRequest({{ request.id }})" aria-label="Close" style="background-color: transparent; border: none;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+<h1 align="center" class="mt-5">Past Requests</h1>
+<ul class="list-group list-group-flush" id="requests">
+    {% for request in user.requests %}
+        {% if request.status=="past" %}
+            <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
+                {{request.userRequest}}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+{%endblock%}

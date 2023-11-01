@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% block title %}Resident Home{% endblock %} {%block content%}
+
+<h1 align="center">Resident Home</h1>
+
+{{user.name}}
+
+{% if user.family %}
+    <h1 align="center" class="mt-5">Family Members</h1>
+    <ul class="list-group list-group-flush" id="requests">
+        {% for member in user.family %}
+            <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
+                {{member.name}}
+                {{member.email}}
+                {{member.contactNo}}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+{%endblock%}
