@@ -44,8 +44,9 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(id_):
-        user=db.session.execute(text('select email from log where id=:id'),{'id':id_})
+        # user=db.session.execute(text('select email from log where id=:id'),{'id':id_})
         user_type = db.session.execute(text('select role from log where id=:id'),{'id': id_})
+        
         print(user_type.fetchone()[0])
         # if user_type=='resident':
             # res = db.session.execute(text('SELECT * FROM log natural join user where log.email=user.email '))

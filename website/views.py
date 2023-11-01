@@ -5,7 +5,7 @@ from . import db
 import json
 from sqlalchemy.sql import func
 from sqlalchemy import engine, text
-from .models import User, Note, Requests, Family,Log
+from .models import User, Note, Requests, Family,Log, Activity
 
 views = Blueprint('views', __name__)
 
@@ -67,6 +67,42 @@ def residentRequest():
     return render_template("resident.html", user=user, role="resident")
 
 
+@views.route('/resident-activity', methods=['GET','POST'])
+@login_required
+def residentActivity():
+    if (request.method=='POST'):
+        userActivity=request.form.get('activity')
+        date=request.form.get('date1')
+        if (len(userActivity)<1):
+            flash('Activity is too short!', category='error')
+        else:
+            new_userActivity=Activity(activity=userActivity, user_id=current_user.id, date=date)
+            db.session.add(new_userActivity)
+            db.session.commit()
+            flash('Activity Registed!', category='success')
+    res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
+    email = res.fetchone()[0]  # Using fetchone() because we expect at most one result
+    # user = db.session.execute(text('select * from User where email=:email'),{'email':email})
+    # current_user = user.fetchone()[0]
+    # print(current_user)
+    print(email)
+    user = User.query.filter_by(email=email).first()
+    print(user)
+    return render_template("activity.html", user=user, role="resident")
+
+
+@views.route('/delete-activity', methods=['POST'])
+def delete_activity():
+    delActivity=json.loads(request.data)
+    activityId=delActivity['activityId']
+    delActivity=Activity.query.get(activityId)
+    if (delActivity):
+        if(delActivity.user_id==current_user.id):
+            db.session.delete(delActivity)
+            db.session.commit()
+    return jsonify({})
+
+
 @views.route('/delete-request', methods=['POST'])
 def delete_request():
     delRequest=json.loads(request.data)
@@ -89,4 +125,8 @@ def familyHome():
     user = Family.query.filter_by(email=email).first()
     print(user.name, user.resident_name)
     print(user)
-    return render_template("familyHome.html", user=user, role="family")
+    requests=db.session.execute(text("select userRequest from Requests where Requests.user_id=:id and status = 'active'"), {'id': user.residentId}).fetchall()
+    print(requests)
+    activities=db.session.execute(text("select activity, date from Activity where Activity.user_id=:id"), {'id': user.residentId}).fetchall()
+    print(activities)
+    return render_template("familyHome.html", user=user, role="family", requests=requests, activities=activities)

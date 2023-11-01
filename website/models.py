@@ -23,6 +23,11 @@ class Log(db.Model, UserMixin):
     password = db.Column(db.String(150))
     role=db.Column(db.String(10))
 
+class Activity(db.Model):
+    id=db.Column(db.Integer, primary_key=True)
+    user_id=db.Column(db.Integer, db.ForeignKey('user.id'))
+    activity=db.Column(db.String(10000))
+    date=db.Column(db.String(120))
 
 class Family(db.Model, UserMixin):
     id=db.Column(db.Integer, primary_key=True)
@@ -45,3 +50,4 @@ class User(db.Model, UserMixin):
     notes=db.relationship('Note')
     requests=db.relationship('Requests')
     family=db.relationship('Family')
+    activity=db.relationship('Activity')

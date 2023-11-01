@@ -1,0 +1,34 @@
+{% extends "base.html" %} {% block title %}Requests{% endblock %} {%block content%}
+
+<h1 align="center">Plan Activity</h1>
+
+<form method="POST">
+    <textarea name="activity" id="activity" class="form-control"></textarea>
+    <div class="my-3">
+        <label for="birthday">Birthday</label>
+        <input type="date" id="date1" name="date1">
+    </div>
+
+    
+    <br/>
+    <div align="center">
+        <button type="submit" class="btn btn-primary">Submit</button> 
+    </div>
+</form>
+
+{%if user.activity%}
+    <h1 align="center" class="mt-5">Current Activities</h1>
+    <ul class="list-group list-group-flush" id="requests">
+    {% for act in user.activity %}
+        <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
+            Activity: {{act.activity}},
+            Date: {{act.date}}
+            <button type="button" class="close" onClick="deleteActivity({{ act.id }})" aria-label="Close" style="background-color: transparent; border: none;">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </li>
+        
+    {% endfor %}
+    </ul>
+{%endif%}
+{%endblock%}

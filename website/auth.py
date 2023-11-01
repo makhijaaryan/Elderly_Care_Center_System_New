@@ -61,10 +61,10 @@ def signup():
             db.session.add(new_log)
             db.session.add(new_user)
             db.session.commit()
-            login_user(new_user, remember=True)
+            # login_user(new_user, remember=True)
             flash("Account created!", category='success')
             print(f"Name:{name}\nEmail:{email}\nPassword: {pass1}\nContact Number:{contactNo}\nRole:{role}\n")
-            return redirect(url_for('views.home'))
+            return redirect(url_for('auth.login'))
          
     return render_template("signup.html", user=current_user)
 

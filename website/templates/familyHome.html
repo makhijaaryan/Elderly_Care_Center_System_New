@@ -1,10 +1,31 @@
 
 {% extends "base.html" %} {% block title %}Family Home{% endblock %}{%block content%}
 
-<h1>family home</h1>
 
-{{user.name}}
+<h3 class="mt-5">Details</h3>
 
-{{user.resident_name}}
+<h5 class="mt-4">Name: {{user.name}}</h5>
+<h5>Email: {{user.email}}</h5>
+<h5>Phone Number: {{user.name}}</h5>
+
+<h5>Family member: {{user.resident_name}}</h5>
+
+{%if requests%}
+    <h3 class="mt-5"> Active Requests of family member</h3>
+    {% for req in requests %}
+        <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
+            {{req[0]}}
+        </li>
+    {% endfor %}
+{%endif%}
+
+{% if activities%}
+    <h3 class="mt-5">Active Requests of family member</h3>
+    {% for act in activities %}
+        <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
+            Activity: {{act[0]}}, Date: {{act[1]}}
+        </li>
+    {% endfor %}
+{%endif%}
 
 {%endblock%}
