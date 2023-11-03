@@ -1,9 +1,11 @@
 {% extends "base.html" %} {% block title %}Staff Home{% endblock %} {%block content%}
 
-<h1 align="center">Staff Home</h1>
+<h1 class="my-5" align="center">Staff Home</h1>
 
-{{user.name}}
 
+<h4>Name: {{user.name}}</h4>
+<h4>Email: {{user.email}}</h4>
+<h4>Contact Number: {{user.contactNo}}</h4>
 
 
 {%endblock%}

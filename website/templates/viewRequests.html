@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block title %}View Requests/Activities{% endblock %} {%block content%}
+
+<h1 class="my-5" align="center">View Requests and Activities</h1>
+
+
+<h3 class="my-5">Active Requests of Residents</h3>
+
+{% for req in reqs%}
+<div class="my-4 mx-5">
+    <h6>Resident Id: {{req[3]}}</h6>
+    <h6>Name: {{req[1]}}</h6>
+    <h6>Request: {{req[0]}}</h6>
+    <h6>Request Date: {{req[2]}}</h6>
+</div>    
+{% endfor %}
+
+
+<h3 class="my-5">Upcoming Activities of Residents</h3>
+
+
+{% for act in acts%}
+<div class="my-4 mx-5">
+    <h6>Resident Id: {{act[2]}}</h6>
+    <h6>Name: {{act[1]}}</h6>
+    <h6>Upcoming Activity: {{act[0]}}</h6>
+    <h6>Date: {{act[3]}}</h6>
+</div>    
+{% endfor %}
+
+{%endblock%}

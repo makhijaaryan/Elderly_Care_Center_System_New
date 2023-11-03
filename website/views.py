@@ -129,17 +129,15 @@ def delete_request():
 @views.route('/family-home', methods=['GET','POST'])
 @login_required
 def familyHome():
-    print(current_user.name)
+    # print(current_user.name)
     res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
     email = res.fetchone()[0] 
     user = Family.query.filter_by(email=email).first()
-    print(user.name, user.resident_name)
-    print(user)
-    requests=db.session.execute(text("select userRequest from Requests where Requests.user_id=:id and status = 'active'"), {'id': user.residentId}).fetchall()
+    requests=db.session.execute(text("select userRequest, date from Requests where Requests.user_id=:id and status = 'active'"), {'id': user.residentId}).fetchall()
     print(requests)
     activities=db.session.execute(text("select activity, date from Activity where Activity.user_id=:id"), {'id': user.residentId}).fetchall()
     print(activities)
-    return render_template("familyHome.html", user=user, role="family", requests=requests, activities=activities)
+    return render_template("familyHome.html", requests= requests, activities= activities, user=user, role="family")
 
 @views.route('/staff-home', methods=['GET','POST'])
 @login_required
@@ -148,11 +146,6 @@ def staffHome():
     res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
     email = res.fetchone()[0] 
     user = Staff.query.filter_by(email=email).first()
-    # activities=db.session.execute(text("select activity, date from Activity where Activity.user_id in (select id from User where staffId =:id)"), {'id': user.id}).fetchall()
-    # print(activities)
-    users = User.query.filter_by(staffId=user.id).all()
-    # activities=db.session.execute(text("select activity, date from Activity where Activity.user_id in :id"), {'id': users.residentId}).fetchall()
-    print(users)
     return render_template("staffHome.html", user=user, role="staff")
 
 @views.route('/admin-home', methods=['GET','POST'])
@@ -168,4 +161,34 @@ def adminHome():
     # print(requests)
     # activities=db.session.execute(text("select activity, date from Activity where Activity.user_id=:id"), {'id': user.residentId}).fetchall()
     # print(activities)
-    return render_template("adminHome.html", user=user, role="admin")
+    staffNumber=db.session.execute(text('select count(*) from Staff')).scalar()
+    residentNumber=db.session.execute(text('select count(*) from User')).scalar()
+    staffDetails=db.session.execute(text('select name, email, contactNo from staff')).fetchall()
+    residentDetails=db.session.execute(text('select name, email, contactNo from user')).fetchall()
+    return render_template("adminHome.html", user=user, role="admin", staffNumber=staffNumber, residentNumber=residentNumber, staffDetails=staffDetails, residentDetails=residentDetails)
+
+
+@views.route('/staff-request', methods=['GET','POST'])
+@login_required
+def staffRequest():
+    res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
+    email = res.fetchone()[0] 
+    user = Staff.query.filter_by(email=email).first()
+
+    staff_id=current_user.id
+    
+    query = query = db.session.query(Requests.userRequest, User.name, Requests.date, User.id) \
+    .join(User, User.id == Requests.user_id) \
+    .filter(User.staffId == staff_id) \
+    .filter(Requests.status == "active") \
+    .order_by(Requests.status) \
+    .all()
+    
+    query1 = db.session.query(Activity.activity, User.name, User.id, Activity.date) \
+    .join(User, User.id == Activity.user_id) \
+    .filter(User.staffId == staff_id) \
+    .all()
+
+    print(query1)
+
+    return render_template("viewRequests.html", user=current_user, reqs=query, acts=query1, role="staff")

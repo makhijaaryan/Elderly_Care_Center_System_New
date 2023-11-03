@@ -1,9 +1,33 @@
 {% extends "base.html" %} {% block title %}Admin Home{% endblock %} {%block content%}
 
-<h1 align="center">Admin Home</h1>
+<h1 class="my-5" align="center">Admin Home</h1>
 
-{{user.name}}
+<h4>Name: {{user.name}}</h4>
+<h4>Email: {{user.email}}</h4>
+<h4>Contact Number: {{user.contactNo}}</h4>
 
 
+<h5 class="my-5 ">Total Number of Staff: {{staffNumber}}</h5>
+
+
+<h4 class="mt-5">Staff Details</h4>
+{% for staff in staffDetails%}
+    <div class="my-3 mx-5">
+        <h6>Name: {{staff[0]}}</h6>
+        <h6>Email: {{staff[1]}}</h6>
+        <h6>Contact Number: {{staff[2]}}</h6>
+    </div>    
+{% endfor %}
+
+<h5 class="my-5">Total Number of Residents: {{residentNumber}}</h5>
+
+<h4 class="mt-5">Resident Details</h4>
+{% for resident in residentDetails%}
+    <div class="my-3 mx-5">
+        <h6>Name: {{resident[0]}}</h6>
+        <h6>Email: {{resident[1]}}</h6>
+        <h6>Contact Number: {{resident[2]}}</h6>
+    </div>    
+{% endfor %}
 
 {%endblock%}
