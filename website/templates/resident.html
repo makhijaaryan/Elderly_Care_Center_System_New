@@ -17,7 +17,7 @@
         {% if request.status=="active" %}
             <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
                 {{request.userRequest}}
-                <button type="button" class="close" onClick="deleteRequest({{ request.id }})" aria-label="Close" style="background-color: transparent; border: none;">
+                <button type="button" class="close" onClick="deleteRequest({{ request.id }}, {{ user.id }})" aria-label="Close" style="background-color: transparent; border: none;">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </li>

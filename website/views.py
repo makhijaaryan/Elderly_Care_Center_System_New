@@ -5,7 +5,7 @@ from . import db
 import json
 from sqlalchemy.sql import func
 from sqlalchemy import engine, text
-from .models import User, Note, Requests, Family,Log, Activity
+from .models import User, Note, Requests, Family,Log, Activity, Staff, Admin
 
 views = Blueprint('views', __name__)
 
@@ -52,7 +52,11 @@ def residentRequest():
         if (len(userRequest)<1):
             flash('Request is too short!', category='error')
         else:
-            new_userRequest=Requests(userRequest=userRequest, user_id=current_user.id)
+            res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
+            email = res.fetchone()[0]  
+            user = User.query.filter_by(email=email).first()
+            print(user.id)
+            new_userRequest=Requests(userRequest=userRequest, user_id=user.id)
             db.session.add(new_userRequest)
             db.session.commit()
             flash('Request Registed!', category='success')
@@ -76,12 +80,16 @@ def residentActivity():
         if (len(userActivity)<1):
             flash('Activity is too short!', category='error')
         else:
-            new_userActivity=Activity(activity=userActivity, user_id=current_user.id, date=date)
+            res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
+            email = res.fetchone()[0]  
+            user = User.query.filter_by(email=email).first()
+            new_userActivity=Activity(activity=userActivity, user_id=user.id, date=date)
             db.session.add(new_userActivity)
             db.session.commit()
             flash('Activity Registed!', category='success')
     res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
-    email = res.fetchone()[0]  # Using fetchone() because we expect at most one result
+    email = res.fetchone()[0]  
+    # Using fetchone() because we expect at most one result
     # user = db.session.execute(text('select * from User where email=:email'),{'email':email})
     # current_user = user.fetchone()[0]
     # print(current_user)
@@ -95,9 +103,10 @@ def residentActivity():
 def delete_activity():
     delActivity=json.loads(request.data)
     activityId=delActivity['activityId']
+    user_id = delActivity['userId']
     delActivity=Activity.query.get(activityId)
     if (delActivity):
-        if(delActivity.user_id==current_user.id):
+        if(delActivity.user_id==user_id):
             db.session.delete(delActivity)
             db.session.commit()
     return jsonify({})
@@ -107,9 +116,10 @@ def delete_activity():
 def delete_request():
     delRequest=json.loads(request.data)
     requestId=delRequest['requestId']
+    user_id = delRequest['userId']
     delRequest=Requests.query.get(requestId)
     if (delRequest):
-        if(delRequest.user_id==current_user.id):
+        if(delRequest.user_id==user_id):
             delRequest.status="past"
             db.session.commit()
     return jsonify({})
@@ -130,3 +140,32 @@ def familyHome():
     activities=db.session.execute(text("select activity, date from Activity where Activity.user_id=:id"), {'id': user.residentId}).fetchall()
     print(activities)
     return render_template("familyHome.html", user=user, role="family", requests=requests, activities=activities)
+
+@views.route('/staff-home', methods=['GET','POST'])
+@login_required
+def staffHome():
+    print(current_user.name)
+    res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
+    email = res.fetchone()[0] 
+    user = Staff.query.filter_by(email=email).first()
+    # activities=db.session.execute(text("select activity, date from Activity where Activity.user_id in (select id from User where staffId =:id)"), {'id': user.id}).fetchall()
+    # print(activities)
+    users = User.query.filter_by(staffId=user.id).all()
+    # activities=db.session.execute(text("select activity, date from Activity where Activity.user_id in :id"), {'id': users.residentId}).fetchall()
+    print(users)
+    return render_template("staffHome.html", user=user, role="staff")
+
+@views.route('/admin-home', methods=['GET','POST'])
+@login_required
+def adminHome():
+    print(current_user.name)
+    res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
+    email = res.fetchone()[0] 
+    user = Admin.query.filter_by(email=email).first()
+    print(user.name)
+    print(user)
+    # requests=db.session.execute(text("select userRequest from Requests where Requests.user_id=:id and status = 'active'"), {'id': user.residentId}).fetchall()
+    # print(requests)
+    # activities=db.session.execute(text("select activity, date from Activity where Activity.user_id=:id"), {'id': user.residentId}).fetchall()
+    # print(activities)
+    return render_template("adminHome.html", user=user, role="admin")

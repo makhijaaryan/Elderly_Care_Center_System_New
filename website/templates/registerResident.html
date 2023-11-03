@@ -1,8 +1,7 @@
-{% extends "base.html" %} {% block title %}Register Family{% endblock %} {%block
+{% extends "base.html" %} {% block title %}Register Resident{% endblock %} {%block
     content%}
     <form method="POST">
-        <h3 align="center" class="my-3">Register Family Member</h3>
-        
+        <h3 align="center" class="my-3">Register Resident</h3>
         <div class="form-group">
             <label for="name" class="my-2">Full Name</label>
             <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name">
@@ -22,6 +21,10 @@
         <div class="form-group">
             <label for="contactNo" class="my-2">Contact Number</label>
             <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Enter Contact Numbert">
+        </div>
+        <div class="form-group">
+            <label for="age" class="my-2">Age</label>
+            <input type="text" class="form-control" id="age" name="age" placeholder="Enter age">
         </div>
         <br/>
         <button type="submit" class="btn btn-primary mb-3">Submit</button>

@@ -28,7 +28,7 @@ def create_app():
     app.register_blueprint(auth, url_prefix='/auth/')
 
     # from .models import Request, UserResident
-    from .models import User, Note, Requests, Family,Log
+    from .models import User, Note, Requests, Family,Log,Admin, Staff
 
 
 

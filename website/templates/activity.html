@@ -23,7 +23,7 @@
         <li class="list-group-item" style="display: flex; justify-content: space-between; align-items: center;">
             Activity: {{act.activity}},
             Date: {{act.date}}
-            <button type="button" class="close" onClick="deleteActivity({{ act.id }})" aria-label="Close" style="background-color: transparent; border: none;">
+            <button type="button" class="close" onClick="deleteActivity({{ act.id }}, {{act.user_id}})" aria-label="Close" style="background-color: transparent; border: none;">
                 <span aria-hidden="true">&times;</span>
             </button>
         </li>

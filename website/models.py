@@ -33,18 +33,33 @@ class Family(db.Model, UserMixin):
     id=db.Column(db.Integer, primary_key=True)
     residentId=db.Column(db.Integer, db.ForeignKey('user.id'))
     email=db.Column(db.String(150), unique=True)
-    # password = db.Column(db.String(150))
     name = db.Column(db.String(150))
     contactNo = db.Column(db.String(10))
     resident_name=db.Column(db.String(150))
+    role=db.Column(db.String(10))
+
+class Staff(db.Model, UserMixin):
+    id=db.Column(db.Integer, primary_key=True)
+    email=db.Column(db.String(150), unique=True)
+    name = db.Column(db.String(150))
+    contactNo = db.Column(db.String(10))
+    residents=db.relationship('User')
+    role=db.Column(db.String(10))
+
+class Admin(db.Model, UserMixin):
+    id=db.Column(db.Integer, primary_key=True)
+    email=db.Column(db.String(150), unique=True)
+    name = db.Column(db.String(150))
+    contactNo = db.Column(db.String(10))
     role=db.Column(db.String(10))
 
 
 class User(db.Model, UserMixin):
     id=db.Column(db.Integer, primary_key=True)
     email=db.Column(db.String(150), unique=True)
-    # password = db.Column(db.String(150))
+    staffId=db.Column(db.Integer, db.ForeignKey('staff.id'))
     name = db.Column(db.String(150))
+    age=db.Column(db.String(5))
     contactNo = db.Column(db.String(10))
     role=db.Column(db.String(10))
     notes=db.relationship('Note')
