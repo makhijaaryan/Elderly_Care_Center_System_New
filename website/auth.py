@@ -77,7 +77,7 @@ def signup():
             # login_user(new_user, remember=True)
             flash("Account created!", category='success')
             print(f"Name:{name}\nEmail:{email}\nPassword: {pass1}\nContact Number:{contactNo}\nRole:{role}\n")
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('views.adminHome'))
          
     return render_template("signup.html", user=current_user)
 
