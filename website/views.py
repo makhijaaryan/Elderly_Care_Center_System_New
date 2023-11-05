@@ -6,6 +6,7 @@ import json
 from sqlalchemy.sql import func
 from sqlalchemy import engine, text
 from .models import User, Note, Requests, Family,Log, Activity, Staff, Admin
+import datetime
 
 views = Blueprint('views', __name__)
 
@@ -77,8 +78,12 @@ def residentActivity():
     if (request.method=='POST'):
         userActivity=request.form.get('activity')
         date=request.form.get('date1')
+        date_entered_datetime = datetime.datetime.strptime(date, "%Y-%m-%d")
+        today = datetime.datetime.today()
         if (len(userActivity)<1):
             flash('Activity is too short!', category='error')
+        elif(date_entered_datetime < today):
+            flash('Invalid Date!', category='error')
         else:
             res = db.session.execute(text('select email from Log where Log.id=:id'), {'id': current_user.id})
             email = res.fetchone()[0]  

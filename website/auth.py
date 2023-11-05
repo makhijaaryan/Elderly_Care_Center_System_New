@@ -13,8 +13,8 @@ def login():
         email = request.form.get('email')
         password=request.form.get('password1')
         user=Log.query.filter_by(email=email).first()
-        login_user(user, remember=True)
         if user:
+            login_user(user, remember=True)
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 print(user.role)
@@ -135,6 +135,8 @@ def registerResident():
             flash("Passwords must match!", category='error')
         elif (len(contactNo)!=10):
             flash("Incorrect number entered!", category='error')
+        elif (int(age)<60):
+            flash("Age criterion not matched!", category='error')
         else:
             password=generate_password_hash(pass1,method='sha256')
             new_log=Log(name=name, email=email,password=password, role=role)

@@ -34,11 +34,12 @@
                     {% if user.role == "staff" %}
                         <a href="/staff-home" class="nav-item nav-link" id ="home">Home</a>
                         <a href="auth/registerResident" class="nav-item nav-link" id ="home">Register Resident</a>
-                        <a href="/staff-request" class="nav-item nav-link" id ="home">View Requests</a>
+                        <a href="/staff-request" class="nav-item nav-link" id ="home">View Requests/Activities</a>
                     {% endif %}
                     {% if user.role == "admin" %}
                         <a href="/admin-home" class="nav-item nav-link" id ="home">Home</a>
                         <a href="auth/registerStaff" class="nav-item nav-link" id ="home">Register Staff</a>
+                        <a href="/auth/signup" class="nav-item nav-link" id ="signup">Create Admin</a>
                     {% endif %}
                     <a href="/auth/logout" class="nav-item nav-link" id ="logout">Logout</a>
                 {%else%}
